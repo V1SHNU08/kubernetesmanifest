@@ -16,10 +16,10 @@ node {
                         sh "git config user.name V1SHNU08"
                         //sh "git switch master"
                         sh "cat deployment.yaml"
-                        sh "sed -i 's+043210536673.dkr.ecr.us-east-1.amazonaws.com/watani-dev.*+043210536673.dkr.ecr.us-east-1.amazonaws.com/watani-dev:${DOCKERTAG}+g' deployment.yaml"
+                        sh "sed -i 's+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod.*+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:${DOCKERTAG}+g' deployment.yaml"
                         sh "cat deployment.yaml"
                         sh "git add ."
-                        sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
+                        sh "git commit -m 'Done by Jenkins Job changemanifest"
                         sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
       }
     }
