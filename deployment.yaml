@@ -1,38 +1,89 @@
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: "Deployment"
 metadata:
-  creationTimestamp: null
+  name: watani-notifi
   labels:
-    app: flaskdemo
-  name: flaskdemo
+    app: watani-notifi
+  namespace: watani-preprod
 spec:
-  replicas: 1
+  replicas: 2
+  revisionHistoryLimit: 4
   selector:
     matchLabels:
-      app: flaskdemo
-  strategy: {}
+      app: watani-notifi
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: flaskdemo
+        app: watani-notifi
+
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - watani-notifi
+            topologyKey: "kubernetes.io/hostname"  
+
+    spec:
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 3000
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 20
       containers:
-      - image: drstrange0812/test:8
-        name: flaskdemo
-        resources: {}
-status: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lb-service
-  labels:
-    app: lb-service
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 5000
-  selector:
-    app: flaskdemo
+      - name: watani-notifi
+        image: 163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:watani-preprod-notifi-26
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+          name: watani-notifi
+        - containerPort: 50051
+          name: notifi-grpc
+        readinessProbe:
+          tcpSocket:
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 3001
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 40"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          runAsUser: 1000
+          capabilities:
+            drop: ["SETUID", "SETGID"]
+        resources:
+          limits:
+            cpu: "512m"
+            memory: "512Mi"
+          requests:
+            cpu: "256m"
+            memory: "256Mi"
+        volumeMounts:
+            - name: env
+              mountPath: /usr/src/app/.env
+              subPath: .env
+              readOnly: true
+      volumes:
+        - name: env
+          secret:
+            secretName: watani-notifi-svc-secret
+
