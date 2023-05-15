@@ -16,7 +16,7 @@ node {
                         sh "git config user.name V1SHNU08"
                         //sh "git switch master"
                         sh "cat deployment.yaml"
-                        sh "sed -i 's+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod.*+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:${DOCKERTAG}+g' deployment.yaml"
+                        sh "sed -i 's+163048243785.dkr.ecr.me-central-1.amazonaws.com/argocd.*+163048243785.dkr.ecr.me-central-1.amazonaws.com/argocd:${DOCKERTAG}+g' deployment.yaml"
                         sh "cat deployment.yaml"
                         sh "git add ."
                         sh "git commit -m 'Done by Jenkins Job changemanifest"
