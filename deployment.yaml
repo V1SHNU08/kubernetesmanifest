@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: "Deployment"
 metadata:
-  name: watani-notifi
+  name: watani-content
   labels:
-    app: watani-notifi
+    app: watani-content
   namespace: test
 spec:
   replicas: 2
   revisionHistoryLimit: 4
   selector:
     matchLabels:
-      app: watani-notifi
+      app: watani-content
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: watani-notifi
+        app: watani-content
 
     spec:
       affinity:
@@ -30,7 +30,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - watani-notifi
+                - watani-content
             topologyKey: "kubernetes.io/hostname"  
 
     spec:
@@ -42,22 +42,22 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 20
       containers:
-      - name: watani-notifi
+      - name: watani-content
         image: 163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:watani-preprod-notifi-26
         imagePullPolicy: Always
         ports:
-        - containerPort: 3001
-          name: watani-notifi
-        - containerPort: 50051
-          name: notifi-grpc
+        - containerPort: 3002
+          name: watani-content
+        - containerPort: 50052
+          name: content-grpc
         readinessProbe:
           tcpSocket:
-            port: 3001
+            port: 3002
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           tcpSocket:
-            port: 3001
+            port: 3002
           initialDelaySeconds: 15
           periodSeconds: 20
         lifecycle:
@@ -85,5 +85,5 @@ spec:
       volumes:
         - name: env
           secret:
-            secretName: watani-notifi-svc-secret
+            secretName: watani-content-svc-secret
 
