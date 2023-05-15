@@ -5,7 +5,7 @@ metadata:
   name: watani-content
   labels:
     app: watani-content
-  namespace: test
+  namespace: watani-preprod
 spec:
   replicas: 2
   revisionHistoryLimit: 4
@@ -21,19 +21,7 @@ spec:
       labels:
         app: watani-content
 
-    spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - watani-content
-            topologyKey: "kubernetes.io/hostname"  
-
-    spec:
+    spec:  
       securityContext:
         fsGroup: 2000
         runAsNonRoot: true
