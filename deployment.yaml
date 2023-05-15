@@ -43,7 +43,7 @@ spec:
       terminationGracePeriodSeconds: 20
       containers:
       - name: watani-content
-        image: 163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:watani-preprod-notifi-26
+        image: 163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3002
