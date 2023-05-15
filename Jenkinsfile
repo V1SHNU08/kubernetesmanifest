@@ -19,8 +19,7 @@ node {
                         sh "sed -i 's+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod.*+163048243785.dkr.ecr.me-central-1.amazonaws.com/watani-preprod:${DOCKERTAG}+g' deployment.yaml"
                         sh "cat deployment.yaml"
                         sh "git init"
-                        sh "git config --global --add safe.directory "*""
-                        sh "git add ."
+                        sh "git add --all"
                         sh "git commit -m 'Done by Jenkins Job changemanifest"
                         sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
       }
