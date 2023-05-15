@@ -5,7 +5,7 @@ metadata:
   name: watani-notifi
   labels:
     app: watani-notifi
-  namespace: argocd
+  namespace: test
 spec:
   replicas: 2
   revisionHistoryLimit: 4
